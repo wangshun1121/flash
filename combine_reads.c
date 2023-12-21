@@ -365,10 +365,13 @@ generate_combined_read(const struct read *read_1,
 	/* Copy the overlapped region.  */
 	while (overlap_len--) {
 		if (*seq_1 == *seq_2) {
-			/* Same base in both reads.  Take the higher quality
-			 * value. */
+			/* Same base in both reads.  Take the sum of due 
+			 * quality value. Minus 2 considers the loss of quality 
+			 * due to calculation of posteriori error probability.
+			*/
 			*combined_seq = *seq_1;
-			*combined_qual = max(*qual_1, *qual_2);
+			// *combined_qual = max(*qual_1, *qual_2);
+			*combined_qual = min(*qual_1 + *qual_2 - 2, 45);
 		} else {
 			/* Different bases in the two reads; use the higher
 			 * quality one.
